@@ -13,6 +13,7 @@ import {
   dummyRecurring,
   User,
   Category,
+  SubCategory,
   Account,
   Transaction,
   Budget,
@@ -47,13 +48,21 @@ interface FinanceContextType {
   addLoan: (loan: Omit<Loan, 'id'>) => void;
   updateInstallmentStatus: (id: string, status: 'paid' | 'pending') => void;
   confirmRecurringTransaction: (recurringId: string) => void;
+
+  // Category management
+  addCategory: (name: string, type: 'expense' | 'income', emoji: string, color: string) => void;
+  deleteCategory: (categoryId: string) => void;
+  renameCategory: (categoryId: string, newName: string) => void;
+  addSubCategory: (categoryId: string, name: string, emoji?: string) => void;
+  deleteSubCategory: (categoryId: string, subCategoryId: string) => void;
+  renameSubCategory: (categoryId: string, subCategoryId: string, newName: string) => void;
 }
 
 const FinanceContext = createContext<FinanceContextType | undefined>(undefined);
 
 export function FinanceProvider({ children }: { children: React.ReactNode }) {
   const [user] = useState<User>(dummyUser);
-  const [categories] = useState<Category[]>(dummyCategories);
+  const [categories, setCategories] = useState<Category[]>(dummyCategories);
   const [accounts, setAccounts] = useState<Account[]>(dummyAccounts);
   const [transactions, setTransactions] = useState<Transaction[]>(dummyTransactions);
   const [budgets, setBudgets] = useState<Budget[]>(dummyBudgets);
@@ -235,6 +244,87 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
+  // Category management functions
+  const addCategory = (
+    name: string,
+    type: 'expense' | 'income',
+    emoji: string,
+    color: string
+  ) => {
+    const newCategory: Category = {
+      id: `cat${Date.now()}`,
+      name,
+      type,
+      emoji,
+      color,
+      subCategories: [],
+    };
+    setCategories([...categories, newCategory]);
+  };
+
+  const deleteCategory = (categoryId: string) => {
+    setCategories(categories.filter((c) => c.id !== categoryId));
+  };
+
+  const renameCategory = (categoryId: string, newName: string) => {
+    setCategories(
+      categories.map((c) => (c.id === categoryId ? { ...c, name: newName } : c))
+    );
+  };
+
+  const addSubCategory = (categoryId: string, name: string, emoji?: string) => {
+    setCategories(
+      categories.map((c) => {
+        if (c.id === categoryId) {
+          const newSubCategory: SubCategory = {
+            id: `subcat${Date.now()}`,
+            name,
+            emoji,
+          };
+          return {
+            ...c,
+            subCategories: [...(c.subCategories || []), newSubCategory],
+          };
+        }
+        return c;
+      })
+    );
+  };
+
+  const deleteSubCategory = (categoryId: string, subCategoryId: string) => {
+    setCategories(
+      categories.map((c) => {
+        if (c.id === categoryId) {
+          return {
+            ...c,
+            subCategories: (c.subCategories || []).filter((s) => s.id !== subCategoryId),
+          };
+        }
+        return c;
+      })
+    );
+  };
+
+  const renameSubCategory = (
+    categoryId: string,
+    subCategoryId: string,
+    newName: string
+  ) => {
+    setCategories(
+      categories.map((c) => {
+        if (c.id === categoryId) {
+          return {
+            ...c,
+            subCategories: (c.subCategories || []).map((s) =>
+              s.id === subCategoryId ? { ...s, name: newName } : s
+            ),
+          };
+        }
+        return c;
+      })
+    );
+  };
+
   return (
     <FinanceContext.Provider
       value={{
@@ -260,6 +350,12 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         addLoan,
         updateInstallmentStatus,
         confirmRecurringTransaction,
+        addCategory,
+        deleteCategory,
+        renameCategory,
+        addSubCategory,
+        deleteSubCategory,
+        renameSubCategory,
       }}
     >
       {children}

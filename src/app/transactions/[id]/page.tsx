@@ -123,6 +123,25 @@ export default function TransactionDetail({ params }: { params: Promise<{ id: st
               </Card>
             )}
 
+            {/* Sub-Category */}
+            {transaction.subCategoryId && category?.subCategories && (
+              (() => {
+                const subCat = category.subCategories.find((s) => s.id === transaction.subCategoryId);
+                return subCat ? (
+                  <Card className="p-4">
+                    <div>
+                      <p className="text-xs text-slate-600 dark:text-slate-400 font-medium mb-1">
+                        Sub-Category
+                      </p>
+                      <p className="font-bold text-slate-900 dark:text-white">
+                        {subCat.emoji} {subCat.name}
+                      </p>
+                    </div>
+                  </Card>
+                ) : null;
+              })()
+            )}
+
             {/* From Account */}
             {account && (
               <Card className="p-4">

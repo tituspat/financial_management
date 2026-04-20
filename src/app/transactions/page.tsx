@@ -34,6 +34,15 @@ export default function Transactions() {
     [categoryMap]
   );
 
+  const getSubCategoryName = useCallback(
+    (categoryId: string, subCategoryId?: string) => {
+      if (!subCategoryId) return undefined;
+      const category = categoryMap.get(categoryId);
+      return category?.subCategories?.find((s) => s.id === subCategoryId)?.name;
+    },
+    [categoryMap]
+  );
+
   const getAccountName = useCallback(
     (accountId: string) => accountMap.get(accountId)?.name || 'Unknown',
     [accountMap]
@@ -110,6 +119,9 @@ export default function Transactions() {
                       txn.type === 'transfer'
                         ? `Transfer to ${getAccountName(txn.toAccountId || '')}`
                         : getCategoryName(txn.categoryId)
+                    }
+                    subCategoryName={
+                      txn.type !== 'transfer' ? getSubCategoryName(txn.categoryId, txn.subCategoryId) : undefined
                     }
                     accountName={getAccountName(txn.accountId)}
                     amount={txn.amount}

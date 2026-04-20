@@ -12,6 +12,7 @@ interface AddTransactionForm {
   type: 'expense' | 'income' | 'transfer';
   amount: string;
   categoryId: string;
+  subCategoryId: string;
   accountId: string;
   toAccountId: string;
   description: string;
@@ -28,6 +29,7 @@ export default function AddTransaction() {
       type: 'expense',
       amount: '',
       categoryId: categories.filter((c) => c.type === 'expense')[0]?.id || '',
+      subCategoryId: '',
       accountId: accounts[0]?.id || '',
       toAccountId: '',
       description: '',
@@ -58,6 +60,7 @@ export default function AddTransaction() {
         description: formValues.description,
         date: formValues.date,
         toAccountId: formValues.type === 'transfer' ? formValues.toAccountId : undefined,
+        subCategoryId: formValues.subCategoryId || undefined,
       });
       router.push('/');
     },
@@ -157,6 +160,30 @@ export default function AddTransaction() {
               }))}
               placeholder="Select a category"
             />
+          )}
+
+          {/* Sub-Category */}
+          {values.type !== 'transfer' && values.categoryId && (
+            (() => {
+              const selectedCategory = categories.find((c) => c.id === values.categoryId);
+              const hasSubCategories = selectedCategory?.subCategories && selectedCategory.subCategories.length > 0;
+              return hasSubCategories ? (
+                <Select
+                  label="Sub-Category (Optional)"
+                  name="subCategoryId"
+                  value={values.subCategoryId}
+                  onChange={handleChange}
+                  options={[
+                    { value: '', label: 'None' },
+                    ...(selectedCategory?.subCategories || []).map((sub) => ({
+                      value: sub.id,
+                      label: `${sub.emoji || ''} ${sub.name}`.trim(),
+                    })),
+                  ]}
+                  placeholder="Select a sub-category"
+                />
+              ) : null;
+            })()
           )}
 
           {/* Account */}

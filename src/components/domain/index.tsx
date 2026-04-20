@@ -8,6 +8,7 @@ interface TransactionItemProps {
   id: string;
   categoryEmoji: string;
   categoryName: string;
+  subCategoryName?: string;
   accountName: string;
   amount: number;
   type: 'expense' | 'income' | 'transfer';
@@ -19,6 +20,7 @@ export function TransactionItem({
   id,
   categoryEmoji,
   categoryName,
+  subCategoryName,
   accountName,
   amount,
   type,
@@ -39,7 +41,7 @@ export function TransactionItem({
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-medium text-slate-900 dark:text-white text-sm truncate">
-            {categoryName}
+            {subCategoryName ? `${categoryName} - ${subCategoryName}` : categoryName}
           </p>
           <p className="text-xs text-slate-500 dark:text-slate-400">{accountName}</p>
         </div>

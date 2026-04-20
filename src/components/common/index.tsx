@@ -1,21 +1,34 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 
 interface PageHeaderProps {
   title: string;
   subtitle?: string;
   action?: React.ReactNode;
+  showSettings?: boolean;
 }
 
-export function PageHeader({ title, subtitle, action }: PageHeaderProps) {
+export function PageHeader({ title, subtitle, action, showSettings }: PageHeaderProps) {
   return (
     <div className="p-6 pt-8 flex justify-between items-start">
       <div>
         <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{title}</h1>
         {subtitle && <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{subtitle}</p>}
       </div>
-      {action}
+      <div className="flex items-center gap-3">
+        {action}
+        {showSettings && (
+          <Link
+            href="/settings"
+            className="text-2xl p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition"
+            title="Settings"
+          >
+            ⚙️
+          </Link>
+        )}
+      </div>
     </div>
   );
 }

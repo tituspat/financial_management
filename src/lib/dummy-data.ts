@@ -16,12 +16,19 @@ export interface Account {
   createdAt: string;
 }
 
+export interface SubCategory {
+  id: string;
+  name: string;
+  emoji?: string;
+}
+
 export interface Category {
   id: string;
   name: string;
   type: 'expense' | 'income';
   emoji: string;
   color: string;
+  subCategories?: SubCategory[];
 }
 
 export interface Transaction {
@@ -34,6 +41,7 @@ export interface Transaction {
   date: string;
   createdAt: string;
   toAccountId?: string;
+  subCategoryId?: string;
 }
 
 export interface Budget {
@@ -101,11 +109,45 @@ export const dummyUser: User = {
 export const dummyCategories: Category[] = [
   // Expenses
   { id: 'cat1', name: 'Coffee', type: 'expense', emoji: '☕', color: '#8B4513' },
-  { id: 'cat2', name: 'Transport', type: 'expense', emoji: '🚗', color: '#FF6B6B' },
-  { id: 'cat3', name: 'Groceries', type: 'expense', emoji: '🛒', color: '#51CF66' },
+  {
+    id: 'cat2',
+    name: 'Transport',
+    type: 'expense',
+    emoji: '🚗',
+    color: '#FF6B6B',
+    subCategories: [
+      { id: 'subcat2-1', name: 'Taxi', emoji: '🚕' },
+      { id: 'subcat2-2', name: 'Public Transit', emoji: '🚌' },
+      { id: 'subcat2-3', name: 'Fuel', emoji: '⛽' },
+    ],
+  },
+  {
+    id: 'cat3',
+    name: 'Groceries',
+    type: 'expense',
+    emoji: '🛒',
+    color: '#51CF66',
+    subCategories: [
+      { id: 'subcat3-1', name: 'Supermarket', emoji: '🏪' },
+      { id: 'subcat3-2', name: 'Market', emoji: '🏬' },
+      { id: 'subcat3-3', name: 'Online', emoji: '💻' },
+    ],
+  },
   { id: 'cat4', name: 'Entertainment', type: 'expense', emoji: '🎬', color: '#FFD93D' },
   { id: 'cat5', name: 'Utilities', type: 'expense', emoji: '💡', color: '#A8E6CF' },
-  { id: 'cat6', name: 'Dining', type: 'expense', emoji: '🍽️', color: '#FF6B9D' },
+  {
+    id: 'cat6',
+    name: 'Dining',
+    type: 'expense',
+    emoji: '🍽️',
+    color: '#FF6B9D',
+    subCategories: [
+      { id: 'subcat6-1', name: 'Restaurant', emoji: '🍽️' },
+      { id: 'subcat6-2', name: 'Cafe', emoji: '☕' },
+      { id: 'subcat6-3', name: 'Fast Food', emoji: '🍔' },
+      { id: 'subcat6-4', name: 'Delivery', emoji: '🛵' },
+    ],
+  },
   // Income
   { id: 'cat7', name: 'Salary', type: 'income', emoji: '💰', color: '#00B894' },
   { id: 'cat8', name: 'Freelance', type: 'income', emoji: '💻', color: '#0984E3' },
