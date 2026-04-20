@@ -53,7 +53,6 @@ export default function Dashboard() {
       <PageHeader
         title="FinTracker"
         subtitle={`${monthName}`}
-        showSettings={true}
       />
 
       <div className="px-6 space-y-6">

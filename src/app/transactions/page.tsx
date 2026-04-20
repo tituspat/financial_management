@@ -1,7 +1,6 @@
 'use client';
 
 import { useFinance } from '@/lib/finance-context';
-import Link from 'next/link';
 import { useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { PageHeader, Tabs, List } from '@/components/common';
@@ -135,15 +134,6 @@ export default function Transactions() {
           ))
         )}
       </div>
-
-      {/* Floating Action Button */}
-      <Link
-        href="/add"
-        className="fixed bottom-28 right-6 w-14 h-14 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-full flex items-center justify-center text-white text-2xl shadow-lg hover:shadow-xl transition-all hover:scale-110"
-        title="Add Transaction"
-      >
-        ➕
-      </Link>
     </div>
   );
 }

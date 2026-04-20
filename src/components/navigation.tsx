@@ -5,10 +5,10 @@ import { usePathname } from 'next/navigation';
 
 const navItems = [
   { href: '/', label: 'Home', icon: '🏠' },
-  { href: '/transactions', label: 'History', icon: '📜' },
-  { href: '/add', label: 'Add', icon: '➕' },
   { href: '/budgets', label: 'Budget', icon: '📊' },
-  { href: '/accounts', label: 'Accounts', icon: '💳' },
+  { href: '/transactions', label: 'Transaction', icon: '📜' },
+  { href: '/accounts', label: 'Account', icon: '💳' },
+  { href: '/more', label: 'More', icon: '⋮' },
 ];
 
 export default function Navigation() {
@@ -18,7 +18,7 @@ export default function Navigation() {
     <nav className="fixed bottom-0 left-0 right-0 border-t border-white/20 dark:border-white/10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl">
       <div className="flex justify-around max-w-2xl mx-auto">
         {navItems.map((item) => {
-          const isActive = pathname === item.href;
+          const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
           return (
             <Link
               key={item.href}
