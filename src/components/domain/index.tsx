@@ -29,31 +29,26 @@ export function TransactionItem({
     type === 'expense' ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400';
 
   return (
-    <Card
-      hover
-      className="p-4 cursor-pointer"
+    <div
       onClick={onClick}
+      className="p-3 flex items-center justify-between gap-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-lg cursor-pointer transition"
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center flex-shrink-0 text-lg">
-            {categoryEmoji}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="font-semibold text-slate-900 dark:text-white text-sm truncate">
-              {categoryName}
-            </p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">{accountName}</p>
-          </div>
+      <div className="flex items-center gap-3 flex-1 min-w-0">
+        <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center flex-shrink-0 text-base">
+          {categoryEmoji}
         </div>
-        <div>
-          <p className={`font-bold text-sm min-w-max ${textColor}`}>
-            {type === 'expense' ? '-' : '+'}
-            {formatCurrency(amount)}
+        <div className="flex-1 min-w-0">
+          <p className="font-medium text-slate-900 dark:text-white text-sm truncate">
+            {categoryName}
           </p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{accountName}</p>
         </div>
       </div>
-    </Card>
+      <p className={`font-bold text-sm min-w-max ${textColor}`}>
+        {type === 'expense' ? '-' : '+'}
+        {formatCurrency(amount)}
+      </p>
+    </div>
   );
 }
 
