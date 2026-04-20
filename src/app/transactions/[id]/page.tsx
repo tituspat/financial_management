@@ -3,18 +3,19 @@
 import { useFinance } from '@/lib/finance-context';
 import { formatCurrency } from '@/lib/currency';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, use } from 'react';
 import { PageHeader } from '@/components/common';
 import { Card, CardBody, Section } from '@/components/cards';
 import { Button, Input } from '@/components/ui/index';
 
-export default function TransactionDetail({ params }: { params: { id: string } }) {
+export default function TransactionDetail({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
+  const { id } = use(params);
   const { transactions, categories, accounts, deleteTransaction, editTransaction } = useFinance();
   const [isEditing, setIsEditing] = useState(false);
   const [editAmount, setEditAmount] = useState('');
 
-  const transaction = transactions.find((t) => t.id === params.id);
+  const transaction = transactions.find((t) => t.id === id);
 
   if (!transaction) {
     return (
@@ -76,8 +77,8 @@ export default function TransactionDetail({ params }: { params: { id: string } }
               {typeLabel[transaction.type]}
             </p>
             {isEditing ? (
-              <div className="flex gap-2 items-center justify-center">
-                <div className="relative w-40">
+              <div className="flex gap-2 items-center justify-center w-full">
+                <div className="relative w-full max-w-xs">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-bold text-slate-400">
                     Rp
                   </span>
@@ -93,7 +94,7 @@ export default function TransactionDetail({ params }: { params: { id: string } }
               </div>
             ) : (
               <h2
-                className={`text-4xl font-bold ${
+                className={`text-3xl sm:text-4xl font-bold break-words overflow-hidden ${
                   transaction.type === 'expense' ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'
                 }`}
               >

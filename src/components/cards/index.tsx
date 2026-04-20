@@ -123,7 +123,7 @@ export function Stat({ label, value, icon, variant = 'default' }: StatProps) {
           {label}
         </p>
       </div>
-      <p className="text-2xl font-bold text-slate-900 dark:text-white">{value}</p>
+      <p className="text-2xl font-bold text-slate-900 dark:text-white break-words">{value}</p>
     </div>
   );
 }

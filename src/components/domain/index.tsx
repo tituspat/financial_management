@@ -90,7 +90,7 @@ export function BudgetItem({
         </div>
         <div className="text-right">
           <p
-            className={`font-bold text-sm ${
+            className={`font-bold text-sm break-words overflow-hidden ${
               isOverBudget
                 ? 'text-rose-600 dark:text-rose-400'
                 : isNearLimit
@@ -156,7 +156,7 @@ export function AccountItem({
         )}
       </div>
       <p
-        className={`text-3xl font-bold ${
+        className={`text-3xl font-bold break-words overflow-hidden ${
           balance >= 0
             ? 'text-emerald-600 dark:text-emerald-400'
             : 'text-rose-600 dark:text-rose-400'

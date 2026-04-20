@@ -63,7 +63,7 @@ export default function Dashboard() {
               <p className="text-xs text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider mb-1">
                 Monthly Net
               </p>
-              <h2 className={`text-4xl font-bold ${
+              <h2 className={`text-4xl font-bold break-words overflow-hidden ${
                 netIncome >= 0
                   ? 'text-emerald-600 dark:text-emerald-400'
                   : 'text-rose-600 dark:text-rose-400'
