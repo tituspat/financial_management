@@ -10,10 +10,17 @@ export interface Account {
   id: string;
   name: string;
   balance: number;
-  type: 'checking' | 'savings' | 'credit_card';
+  type: 'cash' | 'bank' | 'savings' | 'credit_card' | 'e-wallet' | 'investments' | 'loan';
   currency: string;
   archived: boolean;
   createdAt: string;
+  loanMetadata?: {
+    principal: number;
+    interestRate: number;
+    tenure: number;
+    startDate: string;
+    status: 'active' | 'closed';
+  };
 }
 
 export interface SubCategory {
@@ -50,18 +57,6 @@ export interface Budget {
   month: string; // YYYY-MM
   limit: number;
   spent: number;
-}
-
-export interface Loan {
-  id: string;
-  name: string;
-  principal: number;
-  interestRate: number;
-  tenure: number; // in months
-  startDate: string;
-  accountId: string;
-  remainingBalance: number;
-  status: 'active' | 'closed';
 }
 
 export interface Installment {
@@ -159,7 +154,7 @@ export const dummyAccounts: Account[] = [
     id: 'acc1',
     name: 'Checking Account',
     balance: 5250750,
-    type: 'checking',
+    type: 'bank',
     currency: 'IDR',
     archived: false,
     createdAt: '2024-01-15',
@@ -181,6 +176,38 @@ export const dummyAccounts: Account[] = [
     currency: 'IDR',
     archived: false,
     createdAt: '2024-02-01',
+  },
+  {
+    id: 'loan1',
+    name: 'Car Loan',
+    balance: 135000000,
+    type: 'loan',
+    currency: 'IDR',
+    archived: false,
+    createdAt: '2024-01-15',
+    loanMetadata: {
+      principal: 150000000,
+      interestRate: 5.5,
+      tenure: 60,
+      startDate: '2024-01-15',
+      status: 'active',
+    },
+  },
+  {
+    id: 'loan2',
+    name: 'Personal Loan',
+    balance: 48000000,
+    type: 'loan',
+    currency: 'IDR',
+    archived: false,
+    createdAt: '2024-02-01',
+    loanMetadata: {
+      principal: 50000000,
+      interestRate: 8.0,
+      tenure: 24,
+      startDate: '2024-02-01',
+      status: 'active',
+    },
   },
 ];
 
@@ -296,31 +323,6 @@ export const dummyBudgets: Budget[] = [
     month: currentMonth,
     limit: 2500000,
     spent: 1925000,
-  },
-];
-
-export const dummyLoans: Loan[] = [
-  {
-    id: 'loan1',
-    name: 'Car Loan',
-    principal: 150000000,
-    interestRate: 5.5,
-    tenure: 60, // 5 years
-    startDate: '2024-01-15',
-    accountId: 'acc1',
-    remainingBalance: 135000000,
-    status: 'active',
-  },
-  {
-    id: 'loan2',
-    name: 'Personal Loan',
-    principal: 50000000,
-    interestRate: 8.0,
-    tenure: 24,
-    startDate: '2024-02-01',
-    accountId: 'acc1',
-    remainingBalance: 48000000,
-    status: 'active',
   },
 ];
 

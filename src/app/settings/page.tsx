@@ -15,7 +15,7 @@ const EMOJI_OPTIONS = [
 const COLOR_OPTIONS = [
   '#8B4513', '#FF6B6B', '#51CF66', '#FFD93D', '#A8E6CF',
   '#FF6B9D', '#00B894', '#0984E3', '#FDCB6E', '#6C5CE7',
-  '#A29BFE', '#FD79A8', '#FDCB6E', '#E17055', '#74B9FF',
+  '#A29BFE', '#FD79A8', '#E17055', '#74B9FF', '#9B59B6',
 ];
 
 export default function Settings() {
@@ -147,10 +147,6 @@ export default function Settings() {
                 >
                   {COLOR_OPTIONS.map((color) => (
                     <option key={color} value={color}>
-                      <div
-                        className="w-4 h-4 rounded-full inline-block mr-2"
-                        style={{ backgroundColor: color }}
-                      />
                       {color}
                     </option>
                   ))}

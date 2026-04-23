@@ -9,8 +9,10 @@ import { Button } from '@/components/ui/index';
 import { LoanItem } from '@/components/domain';
 
 export default function Loans() {
-  const { loans, installments, accounts, updateInstallmentStatus } = useFinance();
+  const { accounts, installments, updateInstallmentStatus } = useFinance();
   const [expandedLoanId, setExpandedLoanId] = useState<string | null>(null);
+
+  const loanAccounts = accounts.filter((acc) => acc.type === 'loan' && !acc.archived);
 
   const getLoanInstallments = (loanId: string) => {
     return installments.filter((i) => i.loanId === loanId).sort((a, b) => a.installmentNumber - b.installmentNumber);
@@ -18,10 +20,6 @@ export default function Loans() {
 
   const getPendingInstallments = (loanId: string) => {
     return getLoanInstallments(loanId).filter((i) => i.status === 'pending');
-  };
-
-  const getAccountName = (accountId: string) => {
-    return accounts.find((a) => a.id === accountId)?.name || 'Unknown';
   };
 
   const calculateMonthlyPayment = (principal: number, interestRate: number, tenure: number) => {
@@ -34,7 +32,7 @@ export default function Loans() {
       <PageHeader title="Loans" subtitle="Track your obligations" />
 
       <div className="px-6 space-y-5">
-        {loans.length === 0 ? (
+        {loanAccounts.length === 0 ? (
           <EmptyState
             icon="📋"
             title="No loans yet"
@@ -42,20 +40,21 @@ export default function Loans() {
           />
         ) : (
           <List
-            items={loans.map((loan) => {
+            items={loanAccounts.map((loan) => {
               const loanInstallments = getLoanInstallments(loan.id);
               const paidInstallments = loanInstallments.filter((i) => i.status === 'paid').length;
               const nextInstallment = getPendingInstallments(loan.id)[0];
-              const monthlyPayment = calculateMonthlyPayment(loan.principal, loan.interestRate, loan.tenure);
+              const metadata = loan.loanMetadata;
+              const monthlyPayment = metadata ? calculateMonthlyPayment(metadata.principal, metadata.interestRate, metadata.tenure) : 0;
 
               return (
                 <LoanItem
                   key={loan.id}
                   name={loan.name}
-                  principal={loan.principal}
-                  remainingBalance={loan.remainingBalance}
-                  interestRate={loan.interestRate}
-                  accountName={getAccountName(loan.accountId)}
+                  principal={metadata?.principal || 0}
+                  remainingBalance={loan.balance}
+                  interestRate={metadata?.interestRate || 0}
+                  accountName={loan.name}
                   paidInstallments={paidInstallments}
                   totalInstallments={loanInstallments.length}
                   isExpanded={expandedLoanId === loan.id}
@@ -89,7 +88,7 @@ export default function Loans() {
                     <Card>
                       <CardBody>
                         <p className="text-slate-600 dark:text-slate-400 mb-1">Tenure</p>
-                        <p className="font-bold text-slate-900 dark:text-white">{loan.tenure} months</p>
+                        <p className="font-bold text-slate-900 dark:text-white">{metadata?.tenure} months</p>
                       </CardBody>
                     </Card>
                   </div>

@@ -1,8 +1,9 @@
 'use client';
 
 import { useFinance } from '@/lib/finance-context';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { PageHeader, List, Grid } from '@/components/common';
+import { PageHeader, List } from '@/components/common';
 import { Card, CardBody, Section, EmptyState } from '@/components/cards';
 import { Button, Input, Select } from '@/components/ui/index';
 import { AccountItem } from '@/components/domain';
@@ -10,19 +11,30 @@ import { useForm } from '@/hooks';
 
 interface AddAccountForm {
   name: string;
-  type: 'checking' | 'savings' | 'credit_card';
+  type: 'cash' | 'bank' | 'savings' | 'credit_card' | 'e-wallet' | 'investments' | 'loan';
   balance: string;
   currency: string;
 }
 
+const ACCOUNT_CATEGORIES = [
+  { type: 'bank', label: '🏦 Bank', icon: '🏦' },
+  { type: 'savings', label: '🏧 Savings', icon: '🏧' },
+  { type: 'credit_card', label: '💳 Credit Card', icon: '💳' },
+  { type: 'e-wallet', label: '📱 E-wallet', icon: '📱' },
+  { type: 'investments', label: '📈 Investments', icon: '📈' },
+  { type: 'loan', label: '📋 Loan', icon: '📋' },
+  { type: 'cash', label: '💵 Cash', icon: '💵' },
+];
+
 export default function Accounts() {
   const { accounts, addAccount: addAcc, archiveAccount } = useFinance();
+  const router = useRouter();
   const [showForm, setShowForm] = useState(false);
 
   const { values, errors, handleChange, handleSubmit, resetForm } = useForm<AddAccountForm>({
     initialValues: {
       name: '',
-      type: 'checking',
+      type: 'bank',
       balance: '',
       currency: 'IDR',
     },
@@ -50,10 +62,22 @@ export default function Accounts() {
   const activeAccounts = accounts.filter((a) => !a.archived);
   const archivedAccounts = accounts.filter((a) => a.archived);
 
-  const getAccountTransactions = (accountId: string) => {
-    // This would be connected to actual transactions count
-    return 0;
+  const groupAccountsByType = (accts: typeof accounts) => {
+    const groups: Record<string, typeof accounts> = {};
+    accts.forEach((acc) => {
+      if (!groups[acc.type]) {
+        groups[acc.type] = [];
+      }
+      groups[acc.type].push(acc);
+    });
+    return groups;
   };
+
+  const handleAccountClick = (accountId: string) => {
+    router.push(`/transactions?account=${accountId}`);
+  };
+
+  const groupedAccounts = groupAccountsByType(activeAccounts);
 
   return (
     <div className="w-full">
@@ -90,11 +114,7 @@ export default function Accounts() {
                   name="type"
                   value={values.type}
                   onChange={handleChange}
-                  options={[
-                    { value: 'checking', label: '🏦 Checking' },
-                    { value: 'savings', label: '🏧 Savings' },
-                    { value: 'credit_card', label: '💳 Credit Card' },
-                  ]}
+                  options={ACCOUNT_CATEGORIES}
                 />
                 <Input
                   label="Starting Balance"
@@ -114,33 +134,45 @@ export default function Accounts() {
           </Card>
         )}
 
-        {/* Active Accounts */}
-        <Section title="Active Accounts">
-          {activeAccounts.length === 0 ? (
-            <EmptyState
-              icon="💳"
-              title="No accounts yet"
-              action={
-                <Button variant="primary" size="sm" onClick={() => setShowForm(true)}>
-                  Create Account
-                </Button>
-              }
-            />
-          ) : (
-            <List
-              items={activeAccounts.map((account) => (
-                <AccountItem
-                  key={account.id}
-                  name={account.name}
-                  type={account.type}
-                  balance={account.balance}
-                  transactionCount={getAccountTransactions(account.id)}
-                  onArchive={() => archiveAccount(account.id)}
+        {/* Grouped Accounts */}
+        {activeAccounts.length === 0 ? (
+          <EmptyState
+            icon="💳"
+            title="No accounts yet"
+            action={
+              <Button variant="primary" size="sm" onClick={() => setShowForm(true)}>
+                Create Account
+              </Button>
+            }
+          />
+        ) : (
+          ACCOUNT_CATEGORIES.map(({ type, label, icon }) => {
+            const accountsOfType = groupedAccounts[type] || [];
+            if (accountsOfType.length === 0) return null;
+
+            return (
+              <Section key={type} title={label}>
+                <List
+                  items={accountsOfType.map((account) => (
+                    <div
+                      key={account.id}
+                      onClick={() => handleAccountClick(account.id)}
+                      className="cursor-pointer"
+                    >
+                      <AccountItem
+                        name={account.name}
+                        type={account.type}
+                        balance={account.balance}
+                        transactionCount={0}
+                        onArchive={() => archiveAccount(account.id)}
+                      />
+                    </div>
+                  ))}
                 />
-              ))}
-            />
-          )}
-        </Section>
+              </Section>
+            );
+          })
+        )}
 
         {/* Archived Accounts */}
         {archivedAccounts.length > 0 && (

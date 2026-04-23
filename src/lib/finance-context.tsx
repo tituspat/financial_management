@@ -7,7 +7,6 @@ import {
   dummyAccounts,
   dummyTransactions,
   dummyBudgets,
-  dummyLoans,
   dummyInstallments,
   dummyTemplates,
   dummyRecurring,
@@ -17,7 +16,6 @@ import {
   Account,
   Transaction,
   Budget,
-  Loan,
   Installment,
   Template,
   RecurringTransaction,
@@ -29,7 +27,6 @@ interface FinanceContextType {
   accounts: Account[];
   transactions: Transaction[];
   budgets: Budget[];
-  loans: Loan[];
   installments: Installment[];
   templates: Template[];
   recurring: RecurringTransaction[];
@@ -45,7 +42,6 @@ interface FinanceContextType {
   deleteTemplate: (id: string) => void;
   addBudget: (budget: Omit<Budget, 'id'>) => void;
   updateBudget: (id: string, budget: Partial<Budget>) => void;
-  addLoan: (loan: Omit<Loan, 'id'>) => void;
   updateInstallmentStatus: (id: string, status: 'paid' | 'pending') => void;
   confirmRecurringTransaction: (recurringId: string) => void;
 
@@ -66,7 +62,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   const [accounts, setAccounts] = useState<Account[]>(dummyAccounts);
   const [transactions, setTransactions] = useState<Transaction[]>(dummyTransactions);
   const [budgets, setBudgets] = useState<Budget[]>(dummyBudgets);
-  const [loans, setLoans] = useState<Loan[]>(dummyLoans);
   const [installments, setInstallments] = useState<Installment[]>(dummyInstallments);
   const [templates, setTemplates] = useState<Template[]>(dummyTemplates);
   const [recurring, setRecurring] = useState<RecurringTransaction[]>(dummyRecurring);
@@ -188,14 +183,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
 
   const updateBudget = (id: string, updates: Partial<Budget>) => {
     setBudgets(budgets.map((bud) => (bud.id === id ? { ...bud, ...updates } : bud)));
-  };
-
-  const addLoan = (loan: Omit<Loan, 'id'>) => {
-    const newLoan: Loan = {
-      ...loan,
-      id: `loan${Date.now()}`,
-    };
-    setLoans([...loans, newLoan]);
   };
 
   const updateInstallmentStatus = (id: string, status: 'paid' | 'pending') => {
@@ -333,7 +320,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         accounts,
         transactions,
         budgets,
-        loans,
         installments,
         templates,
         recurring,
@@ -347,7 +333,6 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         deleteTemplate,
         addBudget,
         updateBudget,
-        addLoan,
         updateInstallmentStatus,
         confirmRecurringTransaction,
         addCategory,
